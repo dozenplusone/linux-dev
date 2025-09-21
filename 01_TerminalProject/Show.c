@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <locale.h>
 #include <ncurses.h>
 #include <stdio.h>
@@ -26,7 +27,27 @@ main(int argc, char *argv[])
     WINDOW *view = NULL;
     FILE *file = NULL;
 
-    file = fopen(argv[1], "r");
+    if (!(argv[1] && strcmp(argv[1], "-h") && strcmp(argv[1], "--help"))) {
+        fprintf(stderr, "Usage: %s <file>\n", argv[0]);
+
+        if (argv[1]) {
+            fprintf(stderr,
+                    "\n\tA simple text file viewer.\n\n"
+                    "Return codes:\n"
+                    "\t0:\tSuccessful exit.\n"
+                    "\t1:\tNo file specified.\n"
+                    "\t2:\tError opening the file.\n");
+            return 0;
+        }
+
+        return 1;
+    }
+
+    if (!(file = fopen(argv[1], "r"))) {
+        fprintf(stderr, "Error opening '%s': [Errno %d] %s\n",
+                argv[1], errno, strerror(errno));
+        return 2;
+    }
 
     setlocale(LC_ALL, "");
     initscr();
