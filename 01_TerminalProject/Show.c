@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <errno.h>
 #include <locale.h>
 #include <ncurses.h>
@@ -6,14 +7,28 @@
 #include <string.h>
 
 int
-wprintw_f(WINDOW *restrict win, FILE *restrict stream)
+waddstr_f(WINDOW *restrict win, FILE *restrict stream)
 {
     int rc = ERR;
     char *line = NULL;
-    size_t sz;
+    char *lf_pos;
+    int lines;
+    int cols;
 
-    if (getline(&line, &sz, stream) > 0) {
-        rc = wprintw(win, line);
+    getmaxyx(win, lines, cols);
+    line = calloc(cols + 1, sizeof(*line));
+
+    if (fgets(line, cols + 1, stream)) {
+        if (!!(lf_pos = strchr(line, '\n'))) {
+            *lf_pos = '\0';
+        }
+
+        if (isgraph(line[cols - 1])) {
+            ungetc(line[cols - 1], stream);
+        }
+
+        line[cols - 1] = '\0';
+        rc = wprintw(win, "\n%s", line);
     }
 
     free(line);
@@ -63,9 +78,10 @@ main(int argc, char *argv[])
     view = newwin(LINES - 2, COLS - 2, 1, 1);
     keypad(view, TRUE);
     scrollok(view, TRUE);
+    move(1, 0);
 
-    for (int ln = 0; ln < LINES - 3; ++ln) {
-        if (wprintw_f(view, file) == ERR) {
+    for (int ln = 0; ln < LINES - 2; ++ln) {
+        if (waddstr_f(view, file) == ERR) {
             break;
         }
     }
@@ -73,7 +89,7 @@ main(int argc, char *argv[])
     for (int ch = wgetch(view); ch != 0x1b; ch = wgetch(view)) {
         switch (ch) {
         case 0x20:
-            wprintw_f(view, file);
+            waddstr_f(view, file);
             break;
         }
     }
