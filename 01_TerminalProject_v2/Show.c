@@ -161,13 +161,13 @@ main(int argc, char *argv[])
                 scr->line0 = 0;
             }
             break;
-        case 'n':
+        case 'n': case 'N':
             if (COLS - scr->linefmtlen > 5) {
                 scr->linenum_enabled = !scr->linenum_enabled;
             }
             break;
         }
-    } while (ch != 0x1b && ch != 'q');
+    } while (ch != 0x1b && ch != 'q' && ch != 'Q');
 
     closescreen(scr);
     endwin();
