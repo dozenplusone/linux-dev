@@ -18,6 +18,8 @@ typedef struct screenstate_s
     size_t linemax;
     size_t col0;
     size_t colmax;
+    size_t linefmtlen;
+    uint8_t linenum_enabled;
 } screenstate_t;
 
 static screenstate_t *
@@ -57,6 +59,13 @@ openscreen(const char *path, int lines, int cols, int y, int x)
         ss->data[ln_idx++] = '\0';
     } while (ln_idx < st.st_size);
 
+    len = ss->linemax;
+
+    do {
+        ++ss->linefmtlen;
+        len /= 10;
+    } while (len);
+
     return ss;
 }
 
@@ -70,7 +79,17 @@ refreshscreen(screenstate_t *ss)
     werase(ss->screen);
 
     for (size_t ln = 0; ln < min(lines, ss->linemax - ss->line0); ++ln) {
-        if (ss->col0 < ss->linelen[ss->line0 + ln]) {
+        if (ss->linenum_enabled) {
+            if (ss->col0 < ss->linelen[ss->line0 + ln]) {
+                mvwprintw(ss->screen, ln, 0, "%*zu:  %.*s",
+                        ss->linefmtlen, ss->line0 + ln + 1,
+                        cols - ss->linefmtlen - 3,
+                        &ss->lines[ss->line0 + ln][ss->col0]);
+            } else {
+                mvwprintw(ss->screen, ln, 0, "%*zu:",
+                        ss->linefmtlen, ss->line0 + ln + 1);
+            }
+        } else if (ss->col0 < ss->linelen[ss->line0 + ln]) {
             mvwprintw(ss->screen, ln, 0, "%.*s", cols,
                     &ss->lines[ss->line0 + ln][ss->col0]);
         }
@@ -140,6 +159,11 @@ main(int argc, char *argv[])
                 scr->line0 -= LINES - 2;
             } else {
                 scr->line0 = 0;
+            }
+            break;
+        case 'n':
+            if (COLS - scr->linefmtlen > 5) {
+                scr->linenum_enabled = !scr->linenum_enabled;
             }
             break;
         }
