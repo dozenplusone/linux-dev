@@ -30,7 +30,7 @@ openscreen(const char *path, int lines, int cols, int y, int x)
     size_t len;
 
     fstat(fd, &st);
-    ss->data = malloc(st.st_size);
+    ss->data = malloc(st.st_size + 1);
     read(fd, ss->data, st.st_size);
     close(fd);
 
