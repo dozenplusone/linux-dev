@@ -13,8 +13,11 @@ typedef struct screenstate_s
     WINDOW *screen;
     uint8_t *data;
     char **lines;
+    size_t *linelen;
     size_t line0;
     size_t linemax;
+    size_t col0;
+    size_t colmax;
 } screenstate_t;
 
 static screenstate_t *
@@ -24,6 +27,7 @@ openscreen(const char *path, int lines, int cols, int y, int x)
     int fd = open(path, O_RDONLY);
     struct stat st;
     size_t ln_idx = 0;
+    size_t len;
 
     fstat(fd, &st);
     ss->data = malloc(st.st_size);
@@ -34,11 +38,22 @@ openscreen(const char *path, int lines, int cols, int y, int x)
     keypad(ss->screen, TRUE);
 
     ss->lines = NULL;
+    ss->linelen = NULL;
 
     do {
-        ss->lines = realloc(ss->lines, ++ss->linemax * sizeof(*ss->lines));
+        if ((len = strcspn(&ss->data[ln_idx], "\n")) > ss->colmax) {
+            ss->colmax = len;
+        };
+
+        ++ss->linemax;
+
+        ss->lines = realloc(ss->lines, ss->linemax * sizeof(*ss->lines));
         ss->lines[ss->linemax - 1] = &ss->data[ln_idx];
-        ln_idx += strcspn(&ss->data[ln_idx], "\n");
+
+        ss->linelen = realloc(ss->linelen, ss->linemax * sizeof(*ss->linelen));
+        ss->linelen[ss->linemax - 1] = len;
+
+        ln_idx += len;
         ss->data[ln_idx++] = '\0';
     } while (ln_idx < st.st_size);
 
@@ -55,7 +70,10 @@ refreshscreen(screenstate_t *ss)
     werase(ss->screen);
 
     for (size_t ln = 0; ln < min(lines, ss->linemax - ss->line0); ++ln) {
-        mvwprintw(ss->screen, ln, 0, "%.*s", cols, ss->lines[ss->line0 + ln]);
+        if (ss->col0 < ss->linelen[ss->line0 + ln]) {
+            mvwprintw(ss->screen, ln, 0, "%.*s", cols,
+                    &ss->lines[ss->line0 + ln][ss->col0]);
+        }
     }
 
     wrefresh(ss->screen);
@@ -85,21 +103,47 @@ main(int argc, char *argv[])
 
     do {
         box(stdscr, 0, 0);
-        mvprintw(0, 2, "[ %s / lines %zu-%zu ]", argv[1],
-                scr->line0 + 1, min(scr->line0 + LINES - 2, scr->linemax));
+        mvprintw(0, 2, "[ %s / lines %zu-%zu / columns %zu-%zu ]", argv[1],
+                scr->line0 + 1, min(scr->line0 + LINES - 2, scr->linemax),
+                scr->col0 + 1, min(scr->col0 + COLS - 2, scr->colmax));
         move(0, 0);
         refresh();
         refreshscreen(scr);
         refresh();
 
         switch (ch = wgetch(scr->screen)) {
-        case 0x20:
+        case KEY_DOWN: case ' ':
             if (scr->line0 + LINES - 2 < scr->linemax) {
                 ++scr->line0;
             }
             break;
+        case KEY_UP:
+            if (scr->line0) {
+                --scr->line0;
+            }
+            break;
+        case KEY_RIGHT:
+            if (scr->col0 + COLS - 2 < scr->colmax) {
+                ++scr->col0;
+            }
+            break;
+        case KEY_LEFT:
+            if (scr->col0) {
+                --scr->col0;
+            }
+            break;
+        case KEY_NPAGE:
+            scr->line0 = min(scr->line0 + LINES - 2, scr->linemax - LINES + 2);
+            break;
+        case KEY_PPAGE:
+            if (scr->line0 > LINES - 2) {
+                scr->line0 -= LINES - 2;
+            } else {
+                scr->line0 = 0;
+            }
+            break;
         }
-    } while (ch != 0x1b);
+    } while (ch != 0x1b && ch != 'q');
 
     closescreen(scr);
     endwin();
