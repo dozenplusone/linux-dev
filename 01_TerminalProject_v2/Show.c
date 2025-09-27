@@ -35,6 +35,7 @@ openscreen(const char *path, int lines, int cols, int y, int x)
     ss->data = malloc(st.st_size + 1);
     read(fd, ss->data, st.st_size);
     close(fd);
+    ss->data[st.st_size] = '\0';
 
     ss->screen = newwin(lines, cols, y, x),
     keypad(ss->screen, TRUE);
@@ -111,6 +112,7 @@ int
 main(int argc, char *argv[])
 {
     screenstate_t *scr = NULL;
+    size_t coldef;
     int ch;
 
     setlocale(LC_ALL, "");
@@ -121,10 +123,11 @@ main(int argc, char *argv[])
     scr = openscreen(argv[1], LINES - 2, COLS - 2, 1, 1);
 
     do {
+        coldef = scr->linenum_enabled ? scr->linefmtlen + 5 : 2;
         box(stdscr, 0, 0);
         mvprintw(0, 2, "[ %s / lines %zu-%zu / columns %zu-%zu ]", argv[1],
                 scr->line0 + 1, min(scr->line0 + LINES - 2, scr->linemax),
-                scr->col0 + 1, min(scr->col0 + COLS - 2, scr->colmax));
+                scr->col0 + 1, min(scr->col0 + COLS - coldef, scr->colmax));
         move(0, 0);
         refresh();
         refreshscreen(scr);
@@ -142,7 +145,7 @@ main(int argc, char *argv[])
             }
             break;
         case KEY_RIGHT:
-            if (scr->col0 + COLS - 2 < scr->colmax) {
+            if (scr->col0 + COLS - coldef < scr->colmax) {
                 ++scr->col0;
             }
             break;
