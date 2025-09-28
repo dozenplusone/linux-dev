@@ -1,3 +1,4 @@
+#include <err.h>
 #include <fcntl.h>
 #include <locale.h>
 #include <ncurses.h>
@@ -23,19 +24,21 @@ typedef struct screenstate_s
 } screenstate_t;
 
 static screenstate_t *
-openscreen(const char *path, int lines, int cols, int y, int x)
+openscreen(int fd, int lines, int cols, int y, int x)
 {
-    screenstate_t *ss = calloc(1, sizeof(*ss));
-    int fd = open(path, O_RDONLY);
+    screenstate_t *ss = NULL;
     struct stat st;
     size_t ln_idx = 0;
     size_t len;
 
-    fstat(fd, &st);
-    ss->data = malloc(st.st_size + 1);
+    if (fstat(fd, &st) < 0) {
+        return NULL;
+    }
+
+    ss = calloc(1, sizeof(*ss));
+
+    ss->data = calloc(st.st_size + 1, sizeof(*ss->data));
     read(fd, ss->data, st.st_size);
-    close(fd);
-    ss->data[st.st_size] = '\0';
 
     ss->screen = newwin(lines, cols, y, x),
     keypad(ss->screen, TRUE);
@@ -111,16 +114,32 @@ closescreen(screenstate_t *ss)
 int
 main(int argc, char *argv[])
 {
+    int fd = -1;
     screenstate_t *scr = NULL;
     size_t coldef;
     int ch;
+
+    if (argc < 2) {
+        errx(1, "usage: %s file", argv[0]);
+    }
+
+    if ((fd = open(argv[1], O_RDONLY)) == -1) {
+        err(2, "%s", argv[1]);
+    }
 
     setlocale(LC_ALL, "");
     initscr();
     noecho();
     cbreak();
 
-    scr = openscreen(argv[1], LINES - 2, COLS - 2, 1, 1);
+    if (!(scr = openscreen(fd, LINES - 2, COLS - 2, 1, 1))) {
+        endwin();
+        warn("Failed to get stat for '%s'", argv[1]);
+        close(fd);
+        return 2;
+    }
+
+    close(fd);
 
     do {
         coldef = scr->linenum_enabled ? scr->linefmtlen + 5 : 2;
