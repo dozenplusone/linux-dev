@@ -1,3 +1,4 @@
+.PHONY: all clean distclean
 GENERATES = prog README libout.a
 TRASH = *.o *~ o.*
 CFLAGS = -Wall
