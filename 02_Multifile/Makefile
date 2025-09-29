@@ -1,16 +1,25 @@
 .PHONY: all clean distclean
-GENERATES = prog README libout.a
+GENERATES = prog prog-a prog-so README liboutput_static.a liboutput.so
 TRASH = *.o *~ o.*
-CFLAGS = -Wall
+CFLAGS = -Wall -fPIC
 
-all:    README prog
+all:    README prog prog-a prog-so
 
 .SECONDARY:	fun.o const.o
-.INTERMEDIATE:	libout.a(fun.o const.o)
+.INTERMEDIATE:	liboutput_static.a(fun.o const.o)
 
-libout.a:	libout.a(fun.o const.o)
+liboutput_static.a:	liboutput_static.a(fun.o const.o)
 
-prog:	prog.o libout.a
+liboutput.so:	fun.o const.o
+	cc -shared $^ -o $@
+
+prog:	prog.o fun.o const.o
+
+prog-a:	prog.o liboutput_static.a
+	cc -L. $< -loutput_static -o $@
+
+prog-so:	prog.o liboutput.so
+	cc -L. $< -loutput -o $@
 
 README: prog
 	./$< 2> $@
