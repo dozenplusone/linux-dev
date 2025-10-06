@@ -9,11 +9,11 @@ clean() {
 
 trap clean EXIT HUP INT PIPE QUIT TERM
 
-for char in $(cat | od -An -v -t x1)
+for char in $(cat | iconv -t UCS2 | od -An -v -t x2)
 do
     echo $Y $X ${char} >> ${TMPFILE}
     case ${char} in
-    0a) Y=$((Y + 1)) ; X=0 ;;
+    000a) Y=$((Y + 1)) ; X=0 ;;
     *) X=$((X + 1)) ;;
     esac
 done
@@ -24,7 +24,7 @@ tput clear
 while read y x char
 do
     tput cup $y $x
-    /bin/echo -ne "\x${char}"
+    /bin/printf "\u${char}"
     sleep ${1:-0}
 done < ${TMPFILE}
 
