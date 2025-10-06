@@ -11,10 +11,10 @@ trap clean EXIT HUP INT PIPE QUIT TERM
 
 for char in $(cat | iconv -t UCS2 | od -An -v -t x2)
 do
-    echo $Y $X ${char} >> ${TMPFILE}
     case ${char} in
-    000a) Y=$((Y + 1)) ; X=0 ;;
-    *) X=$((X + 1)) ;;
+    0020) X=$((X + 1)) ;;
+    000a) Y=$((Y + 1)) ; X=0 ; echo $Y $X 000a >> ${TMPFILE} ;;
+    *) X=$((X + 1)) ; echo $Y $X ${char} >> ${TMPFILE} ;;
     esac
 done
 
