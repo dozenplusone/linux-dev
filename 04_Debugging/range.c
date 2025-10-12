@@ -18,7 +18,9 @@ range_init(range *pr)
 int
 range_run(range *pr)
 {
-    return pr->_curval < pr->stop;
+    return pr->step > 0 && pr->_curval < pr->stop
+            || pr->step < 0 && pr->_curval > pr->stop
+            || pr->step == 0 && pr->_curval != pr->stop;
 }
 
 void
