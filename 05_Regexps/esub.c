@@ -34,7 +34,7 @@ patternsubst(
         }
 
         last_sz = sz;
-        sz += idx - last_idx;
+        sz += idx - last_idx + (pattern[idx+1] == '\\');
 
         if ((pmem = realloc(res, sz)) == NULL) {
             fprintf(stderr, "Memory error: Not enough space for realloc()\n");
@@ -44,14 +44,14 @@ patternsubst(
             res = pmem;
         }
 
-        memcpy(&res[last_sz], &pattern[last_idx], idx - last_idx);
+        memcpy(&res[last_sz], &pattern[last_idx], sz - last_sz);
         last_idx = idx;
         backref = pattern[++idx] - '0';
 
         if (1 <= backref && backref <= 9) {
             if (backref > (regoff_t) nmatch) {
                 fprintf(stderr,
-                        "Substitution error: Back reference \\%d is invalid\n",
+                        "Substitution error: Invalid back reference: \\%d\n",
                         backref);
                 free(res);
                 return NULL;
@@ -59,9 +59,20 @@ patternsubst(
 
             last_sz = sz;
             sz += pmatch[backref].rm_eo - pmatch[backref].rm_so;
-            res = realloc(res, sz);
+
+            if ((pmem = realloc(res, sz)) == NULL) {
+                fprintf(stderr,
+                        "Memory error: Not enough space for realloc()\n");
+                free(res);
+                return NULL;
+            } else {
+                res = pmem;
+            }
+
             memcpy(&res[last_sz], &orig_line[pmatch[backref].rm_so],
                     sz - last_sz);
+            last_idx = idx + 1;
+        } else if (pattern[idx] == '\\') {
             last_idx = idx + 1;
         }
     }
