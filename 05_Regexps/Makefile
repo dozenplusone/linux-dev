@@ -20,6 +20,10 @@ test:
 	$(call testcase,[broken\,,broken])
 	$(call testcase, (regular) (express)ion(s?),\
 			to \2 emotion\3 \1ly,Learn regular expressions!)
+# Assuming no match disregards substitution pattern and sanity checks thereof
+# This behavior is different from sed
+	test $$(./esub 'regex' 'valid pattern' 'nomatch') == "nomatch"
+	test $$(./esub 'regex' 'invalid_\1_pattern' 'nomatch') == "nomatch"
 
 clean:
 	rm -f esub true.txt
