@@ -19,14 +19,15 @@ patternsubst(
     size_t pattern_len = strlen(pattern);
     size_t last_idx = 0;
 
-    if ((pmem = malloc(sz)) == NULL) {
+    if (sz && (pmem = malloc(sz)) == NULL) {
         fprintf(stderr, "Memory error: Not enough space for malloc()\n");
         return NULL;
-    } else {
+    } else if (sz) {
         res = pmem;
+        memcpy(res, orig_line, sz);
+    } else {
+        res = NULL;
     }
-
-    memcpy(res, orig_line, sz);
 
     for (size_t idx = 0; idx < pattern_len; ++idx) {
         if (pattern[idx] != '\\') {
@@ -36,15 +37,17 @@ patternsubst(
         last_sz = sz;
         sz += idx - last_idx + (pattern[idx+1] == '\\');
 
-        if ((pmem = realloc(res, sz)) == NULL) {
+        if (sz && (pmem = realloc(res, sz)) == NULL) {
             fprintf(stderr, "Memory error: Not enough space for realloc()\n");
             free(res);
             return NULL;
-        } else {
+        } else if (sz) {
             res = pmem;
+            memcpy(&res[last_sz], &pattern[last_idx], sz - last_sz);
+        } else {
+            res = NULL;
         }
 
-        memcpy(&res[last_sz], &pattern[last_idx], sz - last_sz);
         last_idx = idx;
         backref = pattern[++idx] - '0';
 
@@ -60,17 +63,19 @@ patternsubst(
             last_sz = sz;
             sz += pmatch[backref].rm_eo - pmatch[backref].rm_so;
 
-            if ((pmem = realloc(res, sz)) == NULL) {
+            if (sz && (pmem = realloc(res, sz)) == NULL) {
                 fprintf(stderr,
                         "Memory error: Not enough space for realloc()\n");
                 free(res);
                 return NULL;
-            } else {
+            } else if (sz) {
                 res = pmem;
+                memcpy(&res[last_sz], &orig_line[pmatch[backref].rm_so],
+                        sz - last_sz);
+            } else {
+                res = NULL;
             }
 
-            memcpy(&res[last_sz], &orig_line[pmatch[backref].rm_so],
-                    sz - last_sz);
             last_idx = idx + 1;
         } else if (pattern[idx] == '\\') {
             last_idx = idx + 1;
@@ -80,17 +85,19 @@ patternsubst(
     last_sz = sz;
     sz += (pattern_len - last_idx) + (strlen(orig_line) - pmatch[0].rm_eo) + 1;
 
-    if ((pmem = realloc(res, sz)) == NULL) {
+    if (sz && (pmem = realloc(res, sz)) == NULL) {
         fprintf(stderr, "Memory error: Not enough space for realloc()\n");
         free(res);
         return NULL;
-    } else {
+    } else if (sz) {
         res = pmem;
+        memcpy(&res[last_sz], &pattern[last_idx], pattern_len - last_idx);
+        last_sz += pattern_len - last_idx;
+        memcpy(&res[last_sz], &orig_line[pmatch[0].rm_eo], sz - last_sz);
+    } else {
+        res = NULL;
     }
 
-    memcpy(&res[last_sz], &pattern[last_idx], pattern_len - last_idx);
-    last_sz += pattern_len - last_idx;
-    memcpy(&res[last_sz], &orig_line[pmatch[0].rm_eo], sz - last_sz);
     return res;
 }
 
