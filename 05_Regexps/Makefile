@@ -14,7 +14,7 @@ endef
 test:
 	$(call testcase,(abc).+b(c|e)*,\1\\1\\2\2,abcabc)
 	$(call testcase,([2-4]+).*([7-9]+),#\2#\1#,1234567890)
-	$(call testcase,(full)(match),\2\1ness,fullmatch)
+	$(call testcase,(ful)l(Watch),\2\1ness,fullWatch)
 	$(call testcase,y(z)a(b)c(i)j,\\\2\1\3\\,xyz[abc/&\/|ijk)
 	$(call testcase,(regex),\2,iloveregexps)
 	$(call testcase,[broken\,,broken])
