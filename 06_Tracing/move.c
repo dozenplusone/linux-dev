@@ -71,7 +71,9 @@ main(int argc, char *argv[])
     }
 
     if (unlink(argv[1]) == -1) {
-        err(9, "cannot unlink '%s'", argv[1]);
+        warn("cannot unlink '%s'", argv[1]);
+        unlink(argv[2]);
+        return 9;
     }
 
     return 0;
