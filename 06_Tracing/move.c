@@ -28,7 +28,7 @@ main(int argc, char *argv[])
         err(4, "cannot open '%s'", argv[1]);
     }
 
-    if ((buf = malloc(st_in.st_size)) == NULL) {
+    if (st_in.st_size > 0 && (buf = malloc(st_in.st_size)) == NULL) {
         warn("cannot allocate %zd bytes for reading", st_in.st_size);
         close(fd);
         return 5;
