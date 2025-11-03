@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,7 +8,7 @@
 
 #include "rhash.h"
 
-#ifdef USE_READLINE
+#if HAVE_LIBREADLINE
 #include <readline/readline.h>
 #endif
 
@@ -24,7 +26,7 @@ main(void)
     rhash_library_init();
 
     do {
-#ifdef USE_READLINE
+#if HAVE_LIBREADLINE
         if ((line = readline(NULL)) == NULL) {
             break;
         }
@@ -36,7 +38,7 @@ main(void)
         }
 
         *strchr(line, '\n') = '\0';
-#endif
+#endif // HAVE_LIBREADLINE
 
         if ((file_str = strchr(line, ' ')) == NULL) {
             fprintf(stderr, "Invalid command format\n");
