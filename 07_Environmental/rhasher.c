@@ -6,6 +6,10 @@
 
 #include "rhash.h"
 
+#ifdef USE_READLINE
+#include <readline/readline.h>
+#endif
+
 enum { MAX_DIGEST_SIZE = 64 };
 
 int
@@ -14,19 +18,31 @@ main(void)
     unsigned char digest[MAX_DIGEST_SIZE];
     char formatted_digest[2 + 2*MAX_DIGEST_SIZE];
     char *line = NULL;
-    size_t linesz;
     char *file_str;
     unsigned algo;
 
     rhash_library_init();
 
-    while (getline(&line, &linesz, stdin) != -1) {
+    do {
+#ifdef USE_READLINE
+        if ((line = readline(NULL)) == NULL) {
+            break;
+        }
+#else
+        size_t linesz;
+
+        if (getline(&line, &linesz, stdin) == -1) {
+            break;
+        }
+
+        *strchr(line, '\n') = '\0';
+#endif
+
         if ((file_str = strchr(line, ' ')) == NULL) {
             fprintf(stderr, "Invalid command format\n");
             goto ERR;
         }
 
-        *strchr(line, '\n') = '\0';
         *file_str++ = '\0';
 
         if (!strcasecmp(line, "md5")) {
@@ -62,7 +78,7 @@ main(void)
 ERR:
         free(line);
         line = NULL;
-    }
+    } while (1);
 
     free(line);
     return 0;
