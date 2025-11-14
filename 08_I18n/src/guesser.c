@@ -1,4 +1,8 @@
+#include <libintl.h>
+#include <locale.h>
 #include <stdio.h>
+
+#define _(STR) gettext(STR)
 
 int
 main(void)
@@ -8,7 +12,11 @@ main(void)
     int ans;
     char ch;
 
-    printf("> Pick a natural number between 1 and 100 and press Enter.\r");
+    setlocale(LC_ALL, "");
+    bindtextdomain("guesser", "share/locale");
+    textdomain("guesser");
+
+    printf(_("Pick a natural number between 1 and 100 and press Enter. "));
 
     do {
         if (scanf("%c", &ch) == -1) {
@@ -21,7 +29,7 @@ main(void)
         ans = (lo + hi) >> 1;
 
         do {
-            printf("Is the number not greater than %d? [y/n] ", ans);
+            printf(_("Is the number not greater than %d? [y/n] "), ans);
 
             if (scanf(" %c", &ch) == -1) {
                 putchar('\n');
@@ -36,6 +44,6 @@ main(void)
         }
     } while (ans != lo || ans != hi);
 
-    printf("The answer is %d.\n", ans);
+    printf(_("The answer is %d.\n"), ans);
     return 0;
 }
