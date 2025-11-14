@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <libintl.h>
 #include <locale.h>
 #include <stdio.h>
@@ -13,8 +15,8 @@ main(void)
     char ch;
 
     setlocale(LC_ALL, "");
-    bindtextdomain("guesser", "share/locale");
-    textdomain("guesser");
+    bindtextdomain(PACKAGE, LOCALE_PATH);
+    textdomain(PACKAGE);
 
     printf(_("Pick a natural number between 1 and 100 and press Enter. "));
 
