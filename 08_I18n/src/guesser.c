@@ -3,16 +3,19 @@
 #include <libintl.h>
 #include <locale.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define _(STR) gettext(STR)
 
 int
 main(void)
 {
+    char *input = NULL;
+    size_t sz;
     int lo = 1;
     int hi = 100;
     int ans;
-    char ch;
 
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGE, LOCALE_PATH);
@@ -20,32 +23,33 @@ main(void)
 
     printf(_("Pick a natural number between 1 and 100 and press Enter. "));
 
+    if (getline(&input, &sz, stdin) == -1) {
+        free(input);
+        putchar('\n');
+        return 1;
+    }
+
     do {
-        if (scanf("%c", &ch) == -1) {
+        free(input);
+        input = NULL;
+
+        ans = (lo + hi) >> 1;
+        printf(_("Is the number not greater than %d? [yes/no] "), ans);
+
+        if (getline(&input, &sz, stdin) == -1) {
+            free(input);
             putchar('\n');
             return 1;
         }
-    } while (ch != '\n');
 
-    do {
-        ans = (lo + hi) >> 1;
-
-        do {
-            printf(_("Is the number not greater than %d? [y/n] "), ans);
-
-            if (scanf(" %c", &ch) == -1) {
-                putchar('\n');
-                return 1;
-            }
-        } while (ch != 'y' && ch != 'Y' && ch != 'n' && ch != 'N');
-
-        if (ch == 'y' || ch == 'Y') {
+        if (!strcmp(input, _("yes\n"))) {
             hi = ans;
-        } else {
+        } else if (!strcmp(input, _("no\n"))) {
             lo = ++ans;
         }
     } while (ans != lo || ans != hi);
 
+    free(input);
     printf(_("The answer is %d.\n"), ans);
     return 0;
 }

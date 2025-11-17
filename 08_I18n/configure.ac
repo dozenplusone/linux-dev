@@ -19,6 +19,7 @@ AC_PROG_CC
 AC_CHECK_HEADERS([libintl.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_CHECK_FUNCS([setlocale])
