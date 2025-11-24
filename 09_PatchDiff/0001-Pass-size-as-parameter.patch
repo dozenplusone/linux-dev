@@ -1,0 +1,127 @@
+From 373fb4f485ffef3dfb33ed240dcb214c66297cfa Mon Sep 17 00:00:00 2001
+From: Valery Zabrovsky <valthebrewer@yandex.ru>
+Date: Mon, 24 Nov 2025 09:41:23 +0300
+Subject: [PATCH 1/3] Pass size as parameter
+
+---
+ 09_PatchDiff/maze.c | 56 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 36 insertions(+), 20 deletions(-)
+
+diff --git a/09_PatchDiff/maze.c b/09_PatchDiff/maze.c
+index 5a0b5c3..fcdc682 100644
+--- a/09_PatchDiff/maze.c
++++ b/09_PatchDiff/maze.c
+@@ -2,10 +2,8 @@
+ #include <stdlib.h>
+ #include <time.h>
+ 
+-enum { MAZE_SIZE = 6 };
+-
+ char **
+-generate_maze(void)
++generate_maze(int size)
+ {
+     enum
+     {
+@@ -29,36 +27,45 @@ generate_maze(void)
+     int col;
+     unsigned char dir;
+ 
+-    maze = calloc(2*MAZE_SIZE + 1, sizeof(*maze));
++    if (size <= 0) {
++        return NULL;
++    }
++
++    maze = calloc(2*size + 1, sizeof(*maze));
+ 
+-    for (row = 0; row <= 2 * MAZE_SIZE; ++row) {
+-        maze[row] = calloc(2*MAZE_SIZE + 1, sizeof(*maze[row]));
++    for (row = 0; row <= 2 * size; ++row) {
++        maze[row] = calloc(2*size + 1, sizeof(*maze[row]));
+ 
+-        for (col = 0; col <= 2 * MAZE_SIZE; ++col) {
++        for (col = 0; col <= 2 * size; ++col) {
+             maze[row][col] = (row & 1) && (col & 1) ? '.' : '#';
+         }
+     }
+ 
+-    info = calloc(MAZE_SIZE, sizeof(*info));
++    info = calloc(size, sizeof(*info));
+ 
+-    for (row = 0; row < MAZE_SIZE; ++row) {
+-        info[row] = calloc(MAZE_SIZE, sizeof(*info[row]));
++    for (row = 0; row < size; ++row) {
++        info[row] = calloc(size, sizeof(*info[row]));
+     }
+ 
+-    row = rand() % MAZE_SIZE;
+-    col = rand() % MAZE_SIZE;
++    row = rand() % size;
++    col = rand() % size;
+     info[row][col].row_prev = -1;
+     info[row][col].col_prev = -1;
+ 
+     do {
+         info[row][col].visited = 1;
+         dir = (row != 0 && !info[row - 1][col].visited)
+-                | (row != MAZE_SIZE - 1 && !info[row + 1][col].visited) << 1
++                | (row != size - 1 && !info[row + 1][col].visited) << 1
+                 | (col != 0 && !info[row][col - 1].visited) << 2
+-                | (col != MAZE_SIZE - 1 && !info[row][col + 1].visited) << 3;
++                | (col != size - 1 && !info[row][col + 1].visited) << 3;
+ 
+         if (!dir) {
+             last = &info[row][col];
++
++            if (last->row_prev == -1) {
++                break;
++            }
++
+             row = last->row_prev;
+             col = last->col_prev;
+             continue;
+@@ -94,9 +101,9 @@ generate_maze(void)
+             ++col;
+             break;
+         }
+-    } while (info[row][col].row_prev != -1);
++    } while (1);
+ 
+-    for (row = 0; row < MAZE_SIZE; ++row) {
++    for (row = 0; row < size; ++row) {
+         free(info[row]);
+     }
+ 
+@@ -105,16 +112,25 @@ generate_maze(void)
+ }
+ 
+ int
+-main(void)
++main(int argc, char *argv[])
+ {
+     char **maze = NULL;
+     int i;
++    int size;
++
++    if (argc < 2) {
++        return 1;
++    }
++
++    if ((size = atoi(argv[1])) <= 0) {
++        return 1;
++    }
+ 
+     srand(time(NULL));
+-    maze = generate_maze();
++    maze = generate_maze(size);
+ 
+-    for (i = 0; i <= 2 * MAZE_SIZE; ++i) {
+-        printf("%.*s\n", 2 * MAZE_SIZE + 1, maze[i]);
++    for (i = 0; i <= 2 * size; ++i) {
++        printf("%.*s\n", 2 * size + 1, maze[i]);
+         free(maze[i]);
+     }
+ 
+-- 
+2.51.1
+

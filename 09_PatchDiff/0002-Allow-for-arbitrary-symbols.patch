@@ -1,0 +1,88 @@
+From b5a416462844de4e6aa2e9576e6fa9b48b72d9c9 Mon Sep 17 00:00:00 2001
+From: Valery Zabrovsky <valthebrewer@yandex.ru>
+Date: Mon, 24 Nov 2025 09:46:34 +0300
+Subject: [PATCH 2/3] Allow for arbitrary symbols
+
+---
+ 09_PatchDiff/maze.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/09_PatchDiff/maze.c b/09_PatchDiff/maze.c
+index fcdc682..732d8cd 100644
+--- a/09_PatchDiff/maze.c
++++ b/09_PatchDiff/maze.c
+@@ -3,7 +3,7 @@
+ #include <time.h>
+ 
+ char **
+-generate_maze(int size)
++generate_maze(int size, char pass, char wall)
+ {
+     enum
+     {
+@@ -37,7 +37,7 @@ generate_maze(int size)
+         maze[row] = calloc(2*size + 1, sizeof(*maze[row]));
+ 
+         for (col = 0; col <= 2 * size; ++col) {
+-            maze[row][col] = (row & 1) && (col & 1) ? '.' : '#';
++            maze[row][col] = (row & 1) && (col & 1) ? pass : wall;
+         }
+     }
+ 
+@@ -77,25 +77,25 @@ generate_maze(int size)
+ 
+         switch (dir) {
+         case UP_BIT:
+-            maze[2*row][2*col + 1] = '.';
++            maze[2*row][2*col + 1] = pass;
+             info[row - 1][col].row_prev = row;
+             info[row - 1][col].col_prev = col;
+             --row;
+             break;
+         case DOWN_BIT:
+-            maze[2*row + 2][2*col + 1] = '.';
++            maze[2*row + 2][2*col + 1] = pass;
+             info[row + 1][col].row_prev = row;
+             info[row + 1][col].col_prev = col;
+             ++row;
+             break;
+         case LEFT_BIT:
+-            maze[2*row + 1][2*col] = '.';
++            maze[2*row + 1][2*col] = pass;
+             info[row][col - 1].row_prev = row;
+             info[row][col - 1].col_prev = col;
+             --col;
+             break;
+         case RIGHT_BIT:
+-            maze[2*row + 1][2*col + 2] = '.';
++            maze[2*row + 1][2*col + 2] = pass;
+             info[row][col + 1].row_prev = row;
+             info[row][col + 1].col_prev = col;
+             ++col;
+@@ -118,16 +118,20 @@ main(int argc, char *argv[])
+     int i;
+     int size;
+ 
+-    if (argc < 2) {
++    if (argc < 3) {
+         return 1;
+     }
+ 
+-    if ((size = atoi(argv[1])) <= 0) {
++    if (argv[1][0] == '\0' || argv[1][1] == '\0') {
++        return 1;
++    }
++
++    if ((size = atoi(argv[2])) <= 0) {
+         return 1;
+     }
+ 
+     srand(time(NULL));
+-    maze = generate_maze(size);
++    maze = generate_maze(size, argv[1][0], argv[1][1]);
+ 
+     for (i = 0; i <= 2 * size; ++i) {
+         printf("%.*s\n", 2 * size + 1, maze[i]);
+-- 
+2.51.1
+
