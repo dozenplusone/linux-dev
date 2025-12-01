@@ -11,6 +11,9 @@ AC_CONFIG_HEADERS([config.h])
 # Checks for programs.
 AC_PROG_CC
 
+# Joint pkgconfig library/include tests
+PKG_CHECK_MODULES([CHECK], [check])
+
 # Checks for libraries.
 
 # Checks for header files.
@@ -24,5 +27,6 @@ AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 
 AC_CONFIG_FILES([Makefile
-                 src/Makefile])
+                 src/Makefile
+                 tests/Makefile])
 AC_OUTPUT
