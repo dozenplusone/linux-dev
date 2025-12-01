@@ -1,5 +1,6 @@
 #include "buf.h"
 
+#include <check.h>
 #include <stdint.h>
 
 #suite benchmark

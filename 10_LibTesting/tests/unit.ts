@@ -1,5 +1,7 @@
 #include "buf.h"
 
+#include <check.h>
+
 float *a = NULL;
 long *ai = NULL;
 
@@ -27,7 +29,7 @@ long *ai = NULL;
 #tcase ops
 
 void
-teardown(void)
+ops_teardown(void)
 {
     buf_free(a);
     buf_free(ai);
@@ -66,4 +68,4 @@ teardown(void)
     ck_assert_uint_eq(buf_size(a), 0);
 
 #main-pre
-    tcase_add_checked_fixture(tc1_2, NULL, teardown);
+    tcase_add_checked_fixture(tc1_2, NULL, ops_teardown);
