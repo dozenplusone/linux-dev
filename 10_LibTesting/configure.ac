@@ -11,6 +11,12 @@ AC_CONFIG_HEADERS([config.h])
 # Checks for programs.
 AC_PROG_CC
 
+# Process options.
+AC_ARG_ENABLE([gcov],
+              [AS_HELP_STRING([--enable-gcov], [use gcov to check test coverage])],
+              [], [enable_gcov=no])
+AM_CONDITIONAL([GCOV_ENABLED], [test "$enable_gcov" != no])
+
 # Joint pkgconfig library/include tests
 PKG_CHECK_MODULES([CHECK], [check])
 
