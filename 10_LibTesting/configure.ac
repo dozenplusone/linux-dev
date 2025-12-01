@@ -12,6 +12,8 @@ AC_CONFIG_HEADERS([config.h])
 AC_PROG_CC
 
 # Process options.
+AC_SUBST(CK_VERBOSITY, verbose)
+AC_ARG_VAR(CK_VERBOSITY, ["silent", "minimal", "normal", or "verbose" (default)])
 AC_ARG_ENABLE([gcov],
               [AS_HELP_STRING([--enable-gcov], [use gcov to check test coverage])],
               [], [enable_gcov=no])

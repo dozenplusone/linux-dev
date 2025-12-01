@@ -1,3 +1,4 @@
+TESTS_ENVIRONMENT = CK_VERBOSITY=$(CK_VERBOSITY)
 TESTS = unit bench
 check_PROGRAMS = unit bench
 
