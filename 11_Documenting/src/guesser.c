@@ -8,6 +8,49 @@
 
 #define _(STR) gettext(STR)
 
+char *
+int2roman(int n)
+{
+    static const char letters[] = "IXCMVLD";
+    char *ans = NULL;
+    int len = 0;
+    int pos = sizeof(letters) - 1;
+    int den = 1000;
+
+    if (n < 1 || n > 3999) {
+        return NULL;
+    }
+
+    ans = calloc(sizeof("MMMDCCCLXXXVIII"), 1);
+
+    do {
+        int dig = n / den;
+
+        if (dig == 9) {
+            ans[len++] = letters[pos - 4];
+            ans[len++] = letters[pos - 3];
+        } else if (dig == 4) {
+            ans[len++] = letters[pos - 4];
+            ans[len++] = letters[pos];
+        } else {
+            if (dig >= 5) {
+                ans[len++] = letters[pos];
+                dig -= 5;
+            }
+
+            while (dig--) {
+                ans[len++] = letters[pos - 4];
+            }
+        }
+
+        --pos;
+        n %= den;
+        den /= 10;
+    } while (den);
+
+    return realloc(ans, len + 1);
+}
+
 int
 main(void)
 {
