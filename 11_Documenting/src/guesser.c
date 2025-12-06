@@ -117,14 +117,15 @@ main(void)
     char *input = NULL;
     size_t sz;
     int lo = 1;
-    int hi = 100;
+    int hi = 3999;
     int ans;
 
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGE, LOCALE_PATH);
     textdomain(PACKAGE);
 
-    printf(_("Pick a natural number between 1 and 100 and press Enter. "));
+    printf(_("Pick a natural number between %d and %d and press Enter. "),
+            lo, hi);
 
     if (getline(&input, &sz, stdin) == -1) {
         free(input);

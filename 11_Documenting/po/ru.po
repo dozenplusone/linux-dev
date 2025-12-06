@@ -1,14 +1,14 @@
-# Russian translations for  08_I18n package
-# Английские переводы для пакета  08_I18n.
-# Copyright (C) 2025 THE  08_I18n'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the  08_I18n package.
+# Russian translations for  11_Documenting package
+# Английские переводы для пакета  11_Documenting.
+# Copyright (C) 2025 THE  11_Documenting'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the  11_Documenting package.
 # user <username@example.com>, 2025.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version:  08_I18n\n"
+"Project-Id-Version:  11_Documenting\n"
 "Report-Msgid-Bugs-To: username@example.com\n"
-"POT-Creation-Date: 2025-11-17 20:16+0300\n"
+"POT-Creation-Date: 2025-12-07 01:51+0300\n"
 "PO-Revision-Date: 2025-11-14 12:03+0300\n"
 "Last-Translator: user <username@example.com>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
@@ -19,25 +19,25 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/guesser.c:24
+#: src/guesser.c:127
 #, c-format
-msgid "Pick a natural number between 1 and 100 and press Enter. "
-msgstr "Загадайте натуральное число от 1 до 100 и нажмите Enter. "
+msgid "Pick a natural number between %d and %d and press Enter. "
+msgstr "Загадайте натуральное число от %d до %d и нажмите Enter. "
 
-#: src/guesser.c:37
+#: src/guesser.c:141
 #, c-format
 msgid "Is the number not greater than %d? [yes/no] "
 msgstr "Число не превосходит %d? [да/нет] "
 
-#: src/guesser.c:45
+#: src/guesser.c:149
 msgid "yes\n"
 msgstr "да\n"
 
-#: src/guesser.c:47
+#: src/guesser.c:151
 msgid "no\n"
 msgstr "нет\n"
 
-#: src/guesser.c:53
+#: src/guesser.c:157
 #, c-format
 msgid "The answer is %d.\n"
 msgstr "Ответ: %d.\n"
