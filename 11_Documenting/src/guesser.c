@@ -27,6 +27,21 @@ main(int argc, char *argv[])
     if (argc > 1) {
         if (!strcmp(argv[1], "-r")) {
             is_roman = 1;
+        } else if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) {
+            printf(_(
+                "Usage: %s [-h | --help | -r]\n"
+                "Guess a picked number.\n"
+                "\n"
+                "  -r                print numerals in Roman\n"
+                "  -h, --help        display this help and exit\n"
+            ), argv[0]);
+            return 0;
+        } else {
+            printf(_(
+                "%1$s: invalid option -- '%2$s'\n"
+                "Try '%1$s --help' for more information.\n"
+            ), argv[0], argv[1]);
+            return 1;
         }
     }
 
