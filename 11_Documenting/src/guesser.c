@@ -10,20 +10,38 @@
 #define _(STR) gettext(STR)
 
 int
-main(void)
+main(int argc, char *argv[])
 {
     char *input = NULL;
+    char *roman = NULL;
     size_t sz;
     int lo = 1;
     int hi = 3999;
     int ans;
+    unsigned char is_roman = 0;
 
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGE, LOCALE_PATH);
     textdomain(PACKAGE);
 
-    printf(_("Pick a natural number between %d and %d and press Enter. "),
-            lo, hi);
+    if (argc > 1) {
+        if (!strcmp(argv[1], "-r")) {
+            is_roman = 1;
+        }
+    }
+
+    if (is_roman) {
+        char *lo_roman = int2roman(lo);
+        char *hi_roman = int2roman(hi);
+
+        printf(_("Pick a natural number between %s and %s and press Enter. "),
+                lo_roman, hi_roman);
+        free(lo_roman);
+        free(hi_roman);
+    } else {
+        printf(_("Pick a natural number between %d and %d and press Enter. "),
+                lo, hi);
+    }
 
     if (getline(&input, &sz, stdin) == -1) {
         free(input);
@@ -34,9 +52,15 @@ main(void)
     do {
         free(input);
         input = NULL;
-
         ans = (lo + hi) >> 1;
-        printf(_("Is the number not greater than %d? [yes/no] "), ans);
+
+        if (is_roman) {
+            roman = int2roman(ans);
+            printf(_("Is the number not greater than %s? [yes/no] "), roman);
+            free(roman);
+        } else {
+            printf(_("Is the number not greater than %d? [yes/no] "), ans);
+        }
 
         if (getline(&input, &sz, stdin) == -1) {
             free(input);
@@ -51,7 +75,14 @@ main(void)
         }
     } while (ans != lo || ans != hi);
 
+    if (is_roman) {
+        roman = int2roman(ans);
+        printf(_("The answer is %s.\n"), roman);
+        free(roman);
+    } else {
+        printf(_("The answer is %d.\n"), ans);
+    }
+
     free(input);
-    printf(_("The answer is %d.\n"), ans);
     return 0;
 }
