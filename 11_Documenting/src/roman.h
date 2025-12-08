@@ -8,6 +8,15 @@
 extern "C" {
 #endif
 
+/** Convert a number between 1 and 3999 to a Roman numeral string.
+ *
+ * @param n the number to convert
+ *
+ * If `n` is out of range, the function returns `NULL`.
+ * Otherwise, the returned value is to be freed by the caller.
+ *
+ * @return string with Roman representation
+ */
 static inline char *
 int2roman(int n)
 {
@@ -51,6 +60,15 @@ int2roman(int n)
     return realloc(ans, len + 1);
 }
 
+/** Convert a Roman numeral string to a corresponding number.
+ *
+ * @param str the string to convert
+ *
+ * If `str` is `NULL` or has length of 0, the function returns 0.
+ * If `str` is not a valid representation, the return value is -1.
+ *
+ * @return the number equal to the given Roman numeral
+ */
 static inline int
 roman2int(const char *str)
 {

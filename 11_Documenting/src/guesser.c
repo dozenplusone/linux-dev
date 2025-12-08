@@ -1,3 +1,19 @@
+/** @mainpage guesser
+ * A simple program trying to guess a picked number
+ *
+ * @section SYNOPSIS
+ * `guesser [-h | --help | -r]`
+ *
+ * @section DESCRIPTION
+ * The program tries to guess the picked number between 1 and 3999
+ * by asking whether the number is not greater than the current guess.
+ *
+ * @b -r
+ * @n print numerals in Roman
+ *
+ * @b -h, @b --help
+ * @n display the program's help and exit
+ */
 #include "config.h"
 #include "roman.h"
 
