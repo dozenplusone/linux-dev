@@ -1,9 +1,12 @@
 SUBDIRS = src po
-.PHONY: clean docs man
+.PHONY: clean docs http man
 
 @DX_RULES@
 
 docs:	doxygen-doc
+
+http:	doxygen-doc
+	python3 -m http.server --directory $</html
 
 guesser.1:	src
 	$(MAKE) -C $< guesser
