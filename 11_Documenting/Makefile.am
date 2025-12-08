@@ -1,5 +1,9 @@
 SUBDIRS = src po
-.PHONY: clean man
+.PHONY: clean docs man
+
+@DX_RULES@
+
+docs:	doxygen-doc
 
 guesser.1:	src
 	$(MAKE) -C $< guesser
