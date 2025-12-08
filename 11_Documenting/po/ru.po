@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  11_Documenting\n"
 "Report-Msgid-Bugs-To: username@example.com\n"
-"POT-Creation-Date: 2025-12-07 12:35+0300\n"
+"POT-Creation-Date: 2025-12-08 18:30+0300\n"
 "PO-Revision-Date: 2025-11-14 12:03+0300\n"
 "Last-Translator: user <username@example.com>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
@@ -19,22 +19,24 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/guesser.c:32
+#: src/guesser.c:51
 #, c-format
 msgid ""
-"Usage: %s [-h | --help | -r]\n"
+"Usage: %s [-r | -h | --help | -v | --version]\n"
 "Guess a picked number.\n"
 "\n"
 "  -r                print numerals in Roman\n"
 "  -h, --help        display this help and exit\n"
+"  -v, --version     output version information and exit\n"
 msgstr ""
-"Использование: %s [-h | --help | -r]\n"
+"Использование: %s [-r | -h | --help | -v | --version]\n"
 "Отгадает задуманное число.\n"
 "\n"
 "  -r                печатать числа римскими цифрами\n"
 "  -h, --help        показать эту справку и выйти\n"
+"  -v, --version     показать информацию о версии и выйти\n"
 
-#: src/guesser.c:41
+#: src/guesser.c:64
 #, c-format
 msgid ""
 "%1$s: invalid option -- '%2$s'\n"
@@ -43,40 +45,40 @@ msgstr ""
 "%1$s: неверный ключ — «%2$s»\n"
 "По команде «%1$s --help» можно получить дополнительную информацию.\n"
 
-#: src/guesser.c:52
+#: src/guesser.c:75
 #, c-format
 msgid "Pick a natural number between %s and %s and press Enter. "
 msgstr "Загадайте натуральное число от %s до %s и нажмите Enter. "
 
-#: src/guesser.c:57
+#: src/guesser.c:80
 #, c-format
 msgid "Pick a natural number between %d and %d and press Enter. "
 msgstr "Загадайте натуральное число от %d до %d и нажмите Enter. "
 
-#: src/guesser.c:74
+#: src/guesser.c:97
 #, c-format
 msgid "Is the number not greater than %s? [yes/no] "
 msgstr "Число не превосходит %s? [да/нет] "
 
-#: src/guesser.c:77
+#: src/guesser.c:100
 #, c-format
 msgid "Is the number not greater than %d? [yes/no] "
 msgstr "Число не превосходит %d? [да/нет] "
 
-#: src/guesser.c:86
+#: src/guesser.c:109
 msgid "yes\n"
 msgstr "да\n"
 
-#: src/guesser.c:88
+#: src/guesser.c:111
 msgid "no\n"
 msgstr "нет\n"
 
-#: src/guesser.c:95
+#: src/guesser.c:118
 #, c-format
 msgid "The answer is %s.\n"
 msgstr "Ответ: %s.\n"
 
-#: src/guesser.c:98
+#: src/guesser.c:121
 #, c-format
 msgid "The answer is %d.\n"
 msgstr "Ответ: %d.\n"

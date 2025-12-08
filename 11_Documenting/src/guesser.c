@@ -2,7 +2,7 @@
  * A simple program trying to guess a picked number
  *
  * @section SYNOPSIS
- * `guesser [-h | --help | -r]`
+ * `guesser [-r | -h | --help | -v | --version]`
  *
  * @section DESCRIPTION
  * The program tries to guess the picked number between 1 and 3999
@@ -13,6 +13,9 @@
  *
  * @b -h, @b --help
  * @n display the program's help and exit
+ *
+ * @b -v, @b --version
+ * @n output version information and exit
  */
 #include "config.h"
 #include "roman.h"
@@ -45,12 +48,16 @@ main(int argc, char *argv[])
             is_roman = 1;
         } else if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) {
             printf(_(
-                "Usage: %s [-h | --help | -r]\n"
+                "Usage: %s [-r | -h | --help | -v | --version]\n"
                 "Guess a picked number.\n"
                 "\n"
                 "  -r                print numerals in Roman\n"
                 "  -h, --help        display this help and exit\n"
+                "  -v, --version     output version information and exit\n"
             ), argv[0]);
+            return 0;
+        } else if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) {
+            printf("%s %s\n", PACKAGE, PACKAGE_VERSION);
             return 0;
         } else {
             printf(_(
