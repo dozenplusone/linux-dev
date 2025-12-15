@@ -1,4 +1,4 @@
-SUBDIRS = include po src
+SUBDIRS = include po src tests
 .PHONY: clean
 
 clean:

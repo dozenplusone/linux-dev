@@ -14,6 +14,9 @@ ALL_LINGUAS="ru"
 # Checks for programs.
 AC_PROG_CC
 
+# Checks for pkgconfig-friendly packages.
+PKG_CHECK_MODULES([CHECK], [check])
+
 # Checks for libraries.
 
 # Checks for header files.
@@ -29,5 +32,6 @@ AC_TYPE_UINT8_T
 AC_CONFIG_FILES([Makefile
                  include/Makefile
                  po/Makefile.in
-                 src/Makefile])
+                 src/Makefile
+                 tests/Makefile])
 AC_OUTPUT
