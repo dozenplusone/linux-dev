@@ -38,6 +38,9 @@ typedef struct utc_datetime_s
     utc_time_t time;
 } utc_datetime_t;
 
+int
+dtcheck(utc_datetime_t *pdt);
+
 weekday_t
 get_weekday(utc_date_t *pd);
 

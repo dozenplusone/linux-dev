@@ -2,6 +2,35 @@
 
 #include <errno.h>
 
+int
+dtcheck(utc_datetime_t *pdt)
+{
+    uint8_t mo_days[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+    if (!pdt) {
+        errno = EFAULT;
+        return -1;
+    }
+
+    if ((pdt->date.year % 4u == 0 && pdt->date.year % 100u != 0)
+            || pdt->date.year % 400u == 0) {
+        ++mo_days[1];
+    }
+
+    return !(
+            1 <= pdt->date.month
+            && pdt->date.month <= 12
+            && 1 <= pdt->date.day
+            && pdt->date.day <= mo_days[pdt->date.month - 1]
+            && 0 <= pdt->time.hours
+            && pdt->time.hours <= 23
+            && 0 <= pdt->time.minutes
+            && pdt->time.minutes <= 59
+            && 0 <= pdt->time.seconds
+            && pdt->time.seconds <= 59
+    );
+}
+
 weekday_t
 get_weekday(utc_date_t *pd)
 {
