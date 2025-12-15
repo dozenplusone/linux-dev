@@ -39,7 +39,7 @@ get_weekday(utc_date_t *pd)
 
     if (!pd) {
         errno = EFAULT;
-        return -1;
+        return INVALID_WEEKDAY;
     }
 
     d = *pd;
@@ -65,7 +65,11 @@ get_weekday(utc_date_t *pd)
         );
     }
 
-    return tmp >= 0 ? tmp % 7 : (tmp - 7 * ((tmp + 1) / 7 - 1));
+    if (tmp >= 0) {
+        return (weekday_t)(tmp % 7);
+    }
+
+    return (weekday_t)(tmp - 7 * ((tmp + 1) / 7 - 1));
 }
 
 int

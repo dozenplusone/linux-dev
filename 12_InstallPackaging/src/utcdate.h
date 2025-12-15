@@ -9,6 +9,7 @@ extern "C" {
 
 typedef enum weekday_e
 {
+    INVALID_WEEKDAY = -1,
     SUNDAY,
     MONDAY,
     TUESDAY,
