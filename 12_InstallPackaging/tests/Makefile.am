@@ -1,5 +1,5 @@
-TESTS = timestamp2dt dt2timestamp
-check_PROGRAMS = timestamp2dt dt2timestamp
+TESTS = timestamp2dt dt2timestamp get_weekday
+check_PROGRAMS = timestamp2dt dt2timestamp get_weekday
 
 .ts.c:
 	checkmk $< > $@
