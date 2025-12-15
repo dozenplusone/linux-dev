@@ -2,6 +2,43 @@
 
 #include <errno.h>
 
+weekday_t
+get_weekday(utc_date_t *pd)
+{
+    utc_date_t d;
+    int64_t tmp;
+
+    if (!pd) {
+        errno = EFAULT;
+        return -1;
+    }
+
+    d = *pd;
+
+    /* convert the date as if March was the first month of the year */
+    if (d.month < 3) {
+        --d.year;
+        d.month += 10;
+    } else {
+        d.month -= 2;
+    }
+
+    if (d.year >= 0) {
+        tmp = (
+            d.year + d.year / 4 - d.year / 100 + d.year / 400
+                    + d.day + (31 * d.month) / 12
+        );
+    } else {
+        /* to evaluate integer division in math sense */
+        tmp = (
+            d.year + (d.year + 1) / 4 - (d.year + 1) / 100 + (d.year + 1) / 400
+            + d.day + (31 * d.month) / 12 - 1
+        );
+    }
+
+    return tmp >= 0 ? tmp % 7 : (tmp - 7 * ((tmp + 1) / 7 - 1));
+}
+
 int
 timestamp2dt(int64_t stamp, utc_datetime_t *pdt)
 {

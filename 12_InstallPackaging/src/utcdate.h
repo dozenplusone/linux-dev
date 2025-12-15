@@ -7,6 +7,17 @@
 extern "C" {
 #endif
 
+typedef enum weekday_e
+{
+    SUNDAY,
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+} weekday_t;
+
 typedef struct utc_date_s
 {
     int64_t year: 48;
@@ -26,6 +37,9 @@ typedef struct utc_datetime_s
     utc_date_t date;
     utc_time_t time;
 } utc_datetime_t;
+
+weekday_t
+get_weekday(utc_date_t *pd);
 
 int
 timestamp2dt(int64_t stamp, utc_datetime_t *pdt);
