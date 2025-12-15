@@ -30,6 +30,9 @@ typedef struct utc_datetime_s
 int
 timestamp2dt(int64_t stamp, utc_datetime_t *pdt);
 
+int
+dt2timestamp(int64_t *pstamp, utc_datetime_t *pdt);
+
 #ifdef __cplusplus
 }
 #endif

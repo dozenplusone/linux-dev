@@ -63,3 +63,98 @@ timestamp2dt(int64_t stamp, utc_datetime_t *pdt)
 
     return 0;
 }
+
+int
+dt2timestamp(int64_t *pstamp, utc_datetime_t *pdt)
+{
+    int64_t stamp;
+    int64_t tmp;
+    uint8_t month_len[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+    if (!pdt) {
+        errno = EFAULT;
+        return -1;
+    }
+
+    /* Min datetime is -292277022657-01-27  8:29:52;
+        max datetime is 292277026596-12-04 15:30:07 */
+    if (pdt->date.year < -292277022657 || pdt->date.year > 292277026596) {
+        errno = EOVERFLOW;
+        return -1;
+    } else if (pdt->date.year == -292277022657 && pdt->date.month == 1) {
+        if (pdt->date.day < 27) {
+            errno = EOVERFLOW;
+            return -1;
+        } else if (pdt->date.day == 27) {
+            if (pdt->time.hours < 8) {
+                errno = EOVERFLOW;
+                return -1;
+            } else if (pdt->time.hours == 8) {
+                if (pdt->time.minutes < 29) {
+                    errno = EOVERFLOW;
+                    return -1;
+                } else if (pdt->time.minutes == 29 && pdt->time.seconds < 52) {
+                    errno = EOVERFLOW;
+                    return -1;
+                }
+            }
+        }
+    } else if (pdt->date.year == 292277026596 && pdt->date.month == 12) {
+        if (pdt->date.day > 4) {
+            errno = EOVERFLOW;
+            return -1;
+        } else if (pdt->date.day == 4) {
+            if (pdt->time.hours > 15) {
+                errno = EOVERFLOW;
+                return -1;
+            } else if (pdt->time.hours == 15) {
+                if (pdt->time.minutes > 30) {
+                    errno = EOVERFLOW;
+                    return -1;
+                } else if (pdt->time.minutes == 30 && pdt->time.seconds > 7) {
+                    errno = EOVERFLOW;
+                    return -1;
+                }
+            }
+        }
+    }
+
+    if (!pstamp) {
+        return 0;
+    }
+
+    /* 86400 seconds in a day; 146097 days in a full 400-year cycle */
+    if (pdt->date.year >= 1970) {
+        stamp = (int64_t)86400 * 146097 * ((pdt->date.year - 1970) / 400);
+        tmp = 1970 + (pdt->date.year - 1970) % 400;
+    } else {
+        tmp = (pdt->date.year - 1969) / 400 - 1;
+        stamp = (int64_t)86400 * 146097 * tmp;
+        tmp = pdt->date.year - 400 * tmp;
+    }
+
+    while (tmp-- > 1970) {
+        stamp += 86400 * (
+                365 + ((tmp % 4u == 0 && tmp % 100u != 0) || tmp % 400u == 0)
+        );
+    }
+
+    /* one more February day in case of a leap year */
+    if ((pdt->date.year % 4u == 0 && pdt->date.year % 100u != 0)
+            || pdt->date.year % 400u == 0) {
+        ++month_len[1];
+    }
+
+    for (tmp = pdt->date.month - 2; tmp >= 0; --tmp) {
+        stamp += 86400 * month_len[tmp];
+    }
+
+    stamp += 86400 * (pdt->date.day - 1);
+
+    stamp += 3600 * pdt->time.hours;
+    stamp += 60 * pdt->time.minutes;
+    stamp += pdt->time.seconds;
+
+    *pstamp = stamp;
+    return 0;
+}
