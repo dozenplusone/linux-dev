@@ -5,6 +5,8 @@ AC_PREREQ([2.72])
 AC_INIT([epoch2date], [0.1.0], [username@example.com])
 AM_INIT_AUTOMAKE([foreign])
 LT_INIT([])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.23])
 AC_CONFIG_SRCDIR([src/libutcdate.c])
 AC_CONFIG_HEADERS([config.h])
 
@@ -25,5 +27,6 @@ AC_TYPE_UINT8_T
 
 AC_CONFIG_FILES([Makefile
                  include/Makefile
+                 po/Makefile.in
                  src/Makefile])
 AC_OUTPUT

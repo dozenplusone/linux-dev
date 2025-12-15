@@ -1,5 +1,5 @@
 CFLAGS = -O2 -Wall
-AM_CFLAGS = -I$(top_builddir)/include
+AM_CFLAGS = -I$(top_builddir)/include -D'LOCALE_PATH="$(localedir)"'
 
 lib_LTLIBRARIES=libutcdate.la
 libutcdate_la_LDFLAGS = -version-info 1:0:1

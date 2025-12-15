@@ -1,4 +1,4 @@
-SUBDIRS = include src
+SUBDIRS = include po src
 .PHONY: clean
 
 clean:
