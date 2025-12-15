@@ -9,6 +9,7 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.23])
 AC_CONFIG_SRCDIR([src/libutcdate.c])
 AC_CONFIG_HEADERS([config.h])
+ALL_LINGUAS="ru"
 
 # Checks for programs.
 AC_PROG_CC
