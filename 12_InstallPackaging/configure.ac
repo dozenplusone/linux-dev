@@ -24,5 +24,6 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
+                 include/Makefile
                  src/Makefile])
 AC_OUTPUT
