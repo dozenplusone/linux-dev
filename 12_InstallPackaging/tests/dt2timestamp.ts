@@ -1,6 +1,7 @@
 #include "utcdate.h"
 
 #include <check.h>
+#include <errno.h>
 
 utc_datetime_t dt;
 int64_t stamp;
@@ -544,3 +545,41 @@ int64_t stamp;
     dt.time.seconds = 52;
     ck_assert_int_eq(dt2timestamp(&stamp, &dt), 0);
     ck_assert_int_eq(stamp, INT64_MIN);
+
+#tcase dt2timestamp_errors
+
+#test dt2timestamp_null_pdt
+    ck_assert_int_eq(dt2timestamp(&stamp, NULL), -1);
+    ck_assert_int_eq(errno, EFAULT);
+
+#test dt2timestamp_dt_overflow
+    dt.date.year = 292277026596;
+    dt.date.month = 12;
+    dt.date.day = 4;
+    dt.time.hours = 15;
+    dt.time.minutes = 30;
+    dt.time.seconds = 8;
+    ck_assert_int_eq(dt2timestamp(&stamp, &dt), -1);
+    ck_assert_int_eq(errno, EOVERFLOW);
+
+#test dt2timestamp_dt_underflow
+    dt.date.year = -292277022657;
+    dt.date.month = 1;
+    dt.date.day = 27;
+    dt.time.hours = 8;
+    dt.time.minutes = 29;
+    dt.time.seconds = 51;
+    ck_assert_int_eq(dt2timestamp(&stamp, &dt), -1);
+    ck_assert_int_eq(errno, EOVERFLOW);
+
+#test dt2timestamp_null_pstamp_is_ok
+    dt.date.year = 292277026596;
+    dt.date.month = 12;
+    dt.date.day = 4;
+    dt.time.hours = 15;
+    dt.time.minutes = 30;
+    dt.time.seconds = 8;
+    ck_assert_int_eq(dt2timestamp(NULL, &dt), -1);
+    ck_assert_int_eq(errno, EOVERFLOW);
+    --dt.time.seconds;
+    ck_assert_int_eq(dt2timestamp(NULL, &dt), 0);

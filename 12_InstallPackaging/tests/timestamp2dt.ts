@@ -1,6 +1,7 @@
 #include "utcdate.h"
 
 #include <check.h>
+#include <errno.h>
 
 utc_datetime_t dt;
 
@@ -485,3 +486,9 @@ utc_datetime_t dt;
     ck_assert_uint_eq(dt.time.hours, 8);
     ck_assert_uint_eq(dt.time.minutes, 29);
     ck_assert_uint_eq(dt.time.seconds, 52);
+
+#tcase timestamp2dt_errors
+
+#test timestamp2dt_null_pdt
+    ck_assert_int_eq(timestamp2dt(INT64_MIN, NULL), -1);
+    ck_assert_int_eq(errno, EFAULT);
