@@ -193,37 +193,49 @@ dt2timestamp(int64_t *pstamp, utc_datetime_t *pdt)
         return 0;
     }
 
-    /* 86400 seconds in a day; 146097 days in a full 400-year cycle */
-    if (pdt->date.year >= 1970) {
-        stamp = (int64_t)86400 * 146097 * ((pdt->date.year - 1970) / 400);
-        tmp = 1970 + (pdt->date.year - 1970) % 400;
-    } else {
-        tmp = (pdt->date.year - 1969) / 400 - 1;
-        stamp = (int64_t)86400 * 146097 * tmp;
-        tmp = pdt->date.year - 400 * tmp;
-    }
-
-    while (tmp-- > 1970) {
-        stamp += 86400 * (
-                365 + ((tmp % 4u == 0 && tmp % 100u != 0) || tmp % 400u == 0)
-        );
-    }
-
     /* one more February day in case of a leap year */
     if ((pdt->date.year % 4u == 0 && pdt->date.year % 100u != 0)
             || pdt->date.year % 400u == 0) {
         ++month_len[1];
     }
 
-    for (tmp = pdt->date.month - 2; tmp >= 0; --tmp) {
-        stamp += 86400 * month_len[tmp];
+    /* 86400 seconds in a day; 146097 days in a full 400-year cycle */
+    stamp = (int64_t)86400 * 146097 * ((pdt->date.year - 1970) / 400);
+    tmp = 1970 + (pdt->date.year - 1970) % 400;
+
+    if (tmp >= 1970) {
+        while (tmp-- > 1970) {
+            stamp += 86400 * (365 +
+                    ((tmp % 4u == 0 && tmp % 100u != 0) || tmp % 400u == 0)
+            );
+        }
+
+        for (tmp = 1; tmp < pdt->date.month; ++tmp) {
+            stamp += 86400 * month_len[tmp - 1];
+        }
+
+        stamp += 86400 * (pdt->date.day - 1);
+
+        stamp += 3600 * pdt->time.hours;
+        stamp += 60 * pdt->time.minutes;
+        stamp += pdt->time.seconds;
+    } else {
+        while (++tmp < 1970) {
+            stamp -= 86400 * (365 +
+                    ((tmp % 4u == 0 && tmp % 100u != 0) || tmp % 400u == 0)
+            );
+        }
+
+        for (tmp = 12; tmp > pdt->date.month; --tmp) {
+            stamp -= 86400 * month_len[tmp - 1];
+        }
+
+        stamp -= 86400 * (month_len[tmp - 1] - pdt->date.day);
+
+        stamp -= 3600 * (23 - pdt->time.hours);
+        stamp -= 60 * (59 - pdt->time.minutes);
+        stamp -= 60 - pdt->time.seconds;
     }
-
-    stamp += 86400 * (pdt->date.day - 1);
-
-    stamp += 3600 * pdt->time.hours;
-    stamp += 60 * pdt->time.minutes;
-    stamp += pdt->time.seconds;
 
     *pstamp = stamp;
     return 0;

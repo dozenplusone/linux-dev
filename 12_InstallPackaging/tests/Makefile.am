@@ -1,5 +1,5 @@
-TESTS = unit
-check_PROGRAMS = unit
+TESTS = timestamp2dt dt2timestamp
+check_PROGRAMS = timestamp2dt dt2timestamp
 
 .ts.c:
 	checkmk $< > $@
