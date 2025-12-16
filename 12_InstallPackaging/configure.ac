@@ -7,6 +7,7 @@ AM_INIT_AUTOMAKE([foreign])
 LT_INIT([])
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.23])
+DX_INIT_DOXYGEN([libutcdate])
 AC_CONFIG_SRCDIR([src/libutcdate.c])
 AC_CONFIG_HEADERS([config.h])
 ALL_LINGUAS="ru"
@@ -30,6 +31,7 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
+                 Doxyfile
                  include/Makefile
                  po/Makefile.in
                  src/Makefile
