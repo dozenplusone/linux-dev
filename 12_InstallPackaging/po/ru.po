@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: epoch2date 0.1.0\n"
 "Report-Msgid-Bugs-To: username@example.com\n"
-"POT-Creation-Date: 2025-12-15 22:24+0300\n"
+"POT-Creation-Date: 2025-12-16 02:54+0300\n"
 "PO-Revision-Date: 2025-12-15 22:25+0300\n"
 "Last-Translator: damn <username@example.com>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
@@ -19,83 +19,112 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/epoch2date.c:42
+#: src/epoch2date.c:29
+#, c-format
+msgid ""
+"%s: missing operand\n"
+"Try '%s --help' for more information.\n"
+msgstr ""
+"%s: пропущен операнд\n"
+"По команде «%s --help» можно получить дополнительную информацию.\n"
+
+#: src/epoch2date.c:35
+#, c-format
+msgid ""
+"Usage: %s [-h | --help | -v | --version] STAMP\n"
+"Convert Unix timestamp STAMP to datetime.\n"
+"\n"
+"  -h, --help        display this help and exit\n"
+"  -v, --version     output version information and exit\n"
+msgstr ""
+"Использование: %s [-h | --help | -v | --version] ВРЕМЯ\n"
+"Конвертирует Unix-время ВРЕМЯ в дату/время.\n"
+"\n"
+"  -h, --help        показать эту справку и выйти\n"
+"  -v, --version     показать информацию о версии и выйти\n"
+
+#: src/epoch2date.c:53
+#, c-format
+msgid "%s: conversion failed\n"
+msgstr "%s: не удалось выполнить преобразование\n"
+
+#: src/epoch2date.c:57
 msgid "Jan"
 msgstr "янв"
 
-#: src/epoch2date.c:43
+#: src/epoch2date.c:58
 msgid "Feb"
 msgstr "фев"
 
-#: src/epoch2date.c:44
+#: src/epoch2date.c:59
 msgid "Mar"
 msgstr "мар"
 
-#: src/epoch2date.c:45
+#: src/epoch2date.c:60
 msgid "Apr"
 msgstr "апр"
 
-#: src/epoch2date.c:46
+#: src/epoch2date.c:61
 msgid "May"
 msgstr "мая"
 
-#: src/epoch2date.c:47
+#: src/epoch2date.c:62
 msgid "Jun"
 msgstr "июн"
 
-#: src/epoch2date.c:48
+#: src/epoch2date.c:63
 msgid "Jul"
 msgstr "июл"
 
-#: src/epoch2date.c:49
+#: src/epoch2date.c:64
 msgid "Aug"
 msgstr "авг"
 
-#: src/epoch2date.c:50
+#: src/epoch2date.c:65
 msgid "Sep"
 msgstr "сен"
 
-#: src/epoch2date.c:51
+#: src/epoch2date.c:66
 msgid "Oct"
 msgstr "окт"
 
-#: src/epoch2date.c:52
+#: src/epoch2date.c:67
 msgid "Nov"
 msgstr "ноя"
 
-#: src/epoch2date.c:53
+#: src/epoch2date.c:68
 msgid "Dec"
 msgstr "дек"
 
-#: src/epoch2date.c:55
+#: src/epoch2date.c:70
 msgid "Sun"
 msgstr "Вс"
 
-#: src/epoch2date.c:56
+#: src/epoch2date.c:71
 msgid "Mon"
 msgstr "Пн"
 
-#: src/epoch2date.c:57
+#: src/epoch2date.c:72
 msgid "Tue"
 msgstr "Вт"
 
-#: src/epoch2date.c:58
+#: src/epoch2date.c:73
 msgid "Wed"
 msgstr "Ср"
 
-#: src/epoch2date.c:59
+#: src/epoch2date.c:74
 msgid "Thu"
 msgstr "Чт"
 
-#: src/epoch2date.c:60
+#: src/epoch2date.c:75
 msgid "Fri"
 msgstr "Пт"
 
-#: src/epoch2date.c:61
+#: src/epoch2date.c:76
 msgid "Sat"
 msgstr "Сб"
 
-#: src/epoch2date.c:63
+#: src/epoch2date.c:78
 #, c-format
 msgid "%4$s %2$s %3$2hhu %5$02hhu:%6$02hhu:%7$02hhu UTC %1$04ld\n"
 msgstr "%4$s %3$02hhu %2$s %1$04ld %5$02hhu:%6$02hhu:%7$02hhu UTC\n"

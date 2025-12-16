@@ -6,6 +6,7 @@
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define _(STR) gettext(STR)
 
@@ -24,19 +25,33 @@ main(int argc, char *argv[])
     textdomain(PACKAGE);
 
     if (argc < 2) {
+        printf(_(
+            "%s: missing operand\n"
+            "Try '%s --help' for more information.\n"
+        ), PACKAGE, argv[0]);
         return 1;
+    } else if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) {
+        printf(_(
+            "Usage: %s [-h | --help | -v | --version] STAMP\n"
+            "Convert Unix timestamp STAMP to datetime.\n"
+            "\n"
+            "  -h, --help        display this help and exit\n"
+            "  -v, --version     output version information and exit\n"
+        ), argv[0]);
+        return 0;
+    } else if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) {
+        printf("%s\n", PACKAGE_STRING);
+        return 0;
     }
 
     err = errno;
     stamp = strtoll(argv[1], NULL, 0);
 
-    if (errno != err) {
-        return 2;
-    }
-
-    if (timestamp2dt(stamp, &dt) != 0
+    if (errno != err
+            || timestamp2dt(stamp, &dt) != 0
             || (wd = get_weekday(&dt.date)) == INVALID_WEEKDAY) {
-        return 3;
+        printf(_("%s: conversion failed\n"), argv[0]);
+        return 1;
     }
 
     MONTH_NAMES[0] = _("Jan");
